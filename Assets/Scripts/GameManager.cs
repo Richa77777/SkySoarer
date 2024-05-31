@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         _gameOverPanel.SetActive(false);
-        _scoreText.text = "Score: " + _score;
+        _scoreText.text = _score.ToString();
     }
 
     public void GameOver()
@@ -37,13 +37,24 @@ public class GameManager : MonoBehaviour
         if (!_gameOver)
         {
             _score++;
-            _scoreText.text = "Score: " + _score;
+            _scoreText.text = _score.ToString();
+
+            if (_score > PlayerPrefs.GetInt("Record", 0))
+            {
+                PlayerPrefs.SetInt("Record", _score);
+            }
         }
     }
 
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Time.timeScale = 1f;
+    }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene("Menu");
         Time.timeScale = 1f;
     }
 }

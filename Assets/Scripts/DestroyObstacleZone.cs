@@ -6,7 +6,7 @@ public class DestroyObstacleZone : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Obstacle"))
+        if (collision.CompareTag("ObstacleTrigger"))
         {
             _obstaclePool.ReturnObject(collision.gameObject);
         }

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,9 +7,28 @@ public class ObjectPool : MonoBehaviour
     [SerializeField] private GameObject _prefab;
     [SerializeField] private int _initialSize = 10;
     private Queue<GameObject> _pool = new Queue<GameObject>();
+    private bool _prefabSet = false;
 
     private void Start()
     {
+        if (_prefab == null)
+        {
+            StartCoroutine(WaitForPrefab());
+        }
+        else
+        {
+            _prefabSet = true;
+            InitializePool();
+        }
+    }
+
+    private IEnumerator WaitForPrefab()
+    {
+        while (!_prefabSet)
+        {
+            yield return null;
+        }
+
         InitializePool();
     }
 
@@ -22,8 +42,21 @@ public class ObjectPool : MonoBehaviour
         }
     }
 
+    public void SetPrefab(GameObject prefab)
+    {
+        _prefab = prefab;
+        _prefabSet = true;
+    }
+
     public GameObject GetObject()
     {
+        if (!_prefabSet)
+        {
+            Debug.LogWarning("Prefab not set. Waiting for prefab...");
+            StartCoroutine(WaitForPrefab());
+            return null;
+        }
+
         if (_pool.Count > 0)
         {
             GameObject obj = _pool.Dequeue();
